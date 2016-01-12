@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Project Prioritization</h1>
+    <p class="lead">
+        Project Prioritization is an application for prioritizing projects that are on queue based on the scores 
+        rated with respect to the criteria.
+    </p>
+    <p><a href="@Url.Action(MVC.scores.Index())" class="btn btn-primary btn-lg">Show Project Priorities &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Scores</h2>
+        <p>
+            Show/update scores of listed projects based on criteria.
+        </p>
+        <p><a class="btn btn-default" href="@Url.Action(MVC.scores.Index())">Go to scores &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Projects</h2>
+        <p>
+            Show/update projects that are on queue.
+        </p>
+        <p><a class="btn btn-default" href="@Url.Action(MVC.projects.Index())">Go to projects &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Criteria</h2>
+        <p>
+            Show/update criteria that will be used to evaluate the project queue.
+        </p>
+        <p><a class="btn btn-default" href="@Url.Action(MVC.criteria.Index())">Go to criteria &raquo;</a></p>
+    </div>
+</div>

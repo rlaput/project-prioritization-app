@@ -1,0 +1,95 @@
+﻿@model IEnumerable<ProjectPrioritizationApp.ViewModels.ScoreViewModel>
+
+@{
+    ViewBag.Title = "Scores";
+
+    var criteria = ViewBag.Criteria as List<ProjectPrioritizationApp.Models.criterion>;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<a href="javascript:void(0)" id="toggleScores" class="btn btn-sm btn-primary pull-right">Show/Hide Criteria Scores</a>
+<br />
+<br />
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ProjectName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProjectDescription)
+        </th>
+        @foreach (var criterion in criteria)
+        {
+            <th class="scores" style="display:none;">@criterion.CriterionName (@criterion.Weight)</th>
+        }
+        <th>TWS</th>
+        <th>
+            @Html.DisplayNameFor(model => model.HasBRD)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectDescription)
+            </td>
+            @{float total = 0;}
+            @*@foreach (var criterion in criteria)
+                {
+                    float score = 0;
+                    int rate = 0;
+                    if (criterion.scores.Any(s => s.ProjectId == item.ProjectId))
+                    {
+                        rate = criterion.scores
+                            .Where(s => s.ProjectId == item.ProjectId)
+                            .FirstOrDefault().Rate;
+
+                        score = rate * criterion.Weight;
+                    }
+                    <td class="scores" style="display:none;">@score</td>
+                    total += score;
+                }*@
+            @foreach (var criterion in criteria)
+            {
+                float score = 0;
+                int rate = 0;
+                if (criterion.scores.Any(s => s.ProjectId == item.ProjectId))
+                {
+                    rate = criterion.scores
+                        .Where(s => s.ProjectId == item.ProjectId)
+                        .FirstOrDefault().Rate;
+                    score = rate * criterion.Weight;
+                }
+                <td class="scores" style="display:none;">@rate</td>
+                total += score;
+            }
+            <td>@total</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasBRD)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProjectId })
+                @*|
+                    @Html.ActionLink("Details", "Details", new { id = item.ProjectId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ProjectId })*@
+            </td>
+        </tr>
+    }
+
+</table>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#toggleScores').on('click', function (e) {
+                e.preventDefault();
+                $('.scores').toggle('slow');
+            });
+        });
+    </script>
+}

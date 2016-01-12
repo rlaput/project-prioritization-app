@@ -1,0 +1,80 @@
+﻿@model ProjectPrioritizationApp.Models.project
+
+@{
+    ViewBag.Title = "Edit Project Score";
+
+    var criteria = ViewBag.Criteria as List<ProjectPrioritizationApp.Models.criterion>;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HasBRD, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.HasBRD, new { htmlAttributes = new { @class = "" } })
+                @Html.ValidationMessageFor(model => model.HasBRD, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @foreach (var criterion in criteria)
+        {
+            var score = 0;
+            if (criterion.scores.Any(s => s.ProjectId == Model.Id))
+            {
+                score = criterion.scores
+                    .Where(s => s.ProjectId == Model.Id)
+                    .FirstOrDefault()
+                    .Rate;
+            }
+
+            <div class="form-group">
+                <label class="control-label col-md-2">@criterion.CriterionName</label>
+                <div class="col-md-10">
+                    <input type="hidden" name="scores.Index" value="@criterion.Id" />
+                    <input type="hidden" name="scores[@criterion.Id].CriteriaId" value="@criterion.Id" />
+                    <input type="hidden" name="scores[@criterion.Id].ProjectId" value="@Model.Id" />
+                    <input type="number" name="scores[@criterion.Id].Rate" value="@score" class="form-control" required />
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
